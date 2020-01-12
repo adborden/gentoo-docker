@@ -1,30 +1,35 @@
 .DEFAULT: image
 .PHONY: image verify verify-stage3 verify-portage-snapshot
 
-STAGE3_VERSION := 20200108T214502Z
 DOCKER_REPOSITORY := adborden/gentoo
-
 DOWNLOADS_DIR := downloads
 DOWNLOADS_EXIST := downloads/.keep
 
 PORTAGE_SNAPSHOT_TARBALL := $(DOWNLOADS_DIR)/portage-latest.tar.xz
 PORTAGE_SNAPSHOT_TARBALL_SIG := $(DOWNLOADS_DIR)/portage-latest.tar.xz.gpgsig
+STAGE3_VERSION_FILE := $(DOWNLOADS_DIR)/stage3_version
+STAGE3_IDENTIFIER := $(DOWNLOADS_DIR)/latest-stage3-amd64.txt
 
+STAGE3_VERSION = $(shell cat $(STAGE3_VERSION_FILE))
 STAGE3_DIGESTS = $(DOWNLOADS_DIR)/$(notdir $(STAGE3_TARBALL)).DIGESTS.asc
 STAGE3_TARBALL = $(DOWNLOADS_DIR)/stage3-amd64-$(STAGE3_VERSION).tar.xz
 
 $(DOWNLOADS_EXIST):
 	mkdir -p downloads
 
-$(PORTAGE_SNAPSHOT_TARBALL) $(PORTAGE_SNAPSHOT_TARBALL_SIG): $(DOWNLOADS_EXIST)
-	cd $(DOWNLOADS_DIR) && wget --timestamping http://distfiles.gentoo.org/snapshots/$(notdir $@)
-
 $(STAGE3_IDENTIFIER): $(DOWNLOADS_EXIST)
 	cd $(DOWNLOADS_DIR) && wget --timestamping http://distfiles.gentoo.org/releases/amd64/autobuilds/$(notdir $@)
+
+# Depend on the stage3 identifier so new stage3's trigger a new portage
+# snapshot.
+$(PORTAGE_SNAPSHOT_TARBALL) $(PORTAGE_SNAPSHOT_TARBALL_SIG): $(DOWNLOADS_EXIST) $(STAGE3_IDENTIFIER)
+	cd $(DOWNLOADS_DIR) && wget --timestamping http://distfiles.gentoo.org/snapshots/$(notdir $@)
 
 $(STAGE3_TARBALL) $(STAGE3_DIGESTS): $(STAGE3_VERSION_FILE) $(DOWNLOADS_EXIST)
 	cd $(DOWNLOADS_DIR) && wget --timestamping http://distfiles.gentoo.org/releases/amd64/autobuilds/$(STAGE3_VERSION)/$(notdir $@)
 
+$(STAGE3_VERSION_FILE): $(STAGE3_IDENTIFIER) $(DOWNLOADS_EXIST)
+	tail -n 1 $(STAGE3_IDENTIFIER) | sed -e 's!/.*$$!!' > $@
 
 # Parse out the SHA512 hash for tarball. DIGESTS contains digests for several
 # algorithms and several files, we only need one.
