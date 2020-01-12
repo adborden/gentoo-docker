@@ -23,9 +23,9 @@ building.
 
 - [Docker](https://docs.docker.com/) v19+
 
-Download the Gentoo release signing key.
+Download the Gentoo release signing keys.
 
-    $ gpg --keyserver hkps://keys.gentoo.org --recv-keys 534E4209AB49EEE1C19D96162C44695DB9F6043D
+    $ gpg --keyserver hkps://keys.gentoo.org --recv-keys 534E4209AB49EEE1C19D96162C44695DB9F6043D E1D6ABB63BFCFB4BA02FDF1CEC590EEAC9189250
 
 
 ### Building
