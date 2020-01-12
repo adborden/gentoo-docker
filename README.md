@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/adborden/gentoo-docker.svg?style=svg)](https://circleci.com/gh/adborden/gentoo-docker)
+
 # gentoo-docker
 
 Builds a base docker image from the stage3 tarball.
