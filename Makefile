@@ -2,7 +2,6 @@
 .PHONY: image stage3
 
 STAGE3_VERSION := 20200108T214502Z
-GENTOO_RELEASE_KEY_ID := 534E4209AB49EEE1C19D96162C44695DB9F6043D
 DOCKER_REPOSITORY := adborden/gentoo
 
 STAGE3_TARBALL := stage3-amd64-$(STAGE3_VERSION).tar.xz
@@ -18,7 +17,6 @@ sha512sum.txt: $(STAGE3_DIGESTS)
 	sed -n -e '/SHA512 HASH/ {n;p}' $(STAGE3_DIGESTS) | grep $(STAGE3_TARBALL)$$ > $@
 
 stage3: $(STAGE3_TARBALL) sha512sum.txt
-	gpg --recv-keys $(GENTOO_RELEASE_KEY_ID)
 	gpg --verify $(STAGE3_DIGESTS)
 	sha512sum -c sha512sum.txt
 

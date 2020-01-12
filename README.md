@@ -13,8 +13,29 @@ building.
 
     $ docker run --rm -it --name gentoo -v /var/db/repos/gentoo:/var/db/repos/gentoo:ro --tmpfs /var/tmp adborden/gentoo bash
 
+
 ## Development
+
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/) v19+
+
+Download the Gentoo release signing key.
+
+    $ gpg --recv-keys 534E4209AB49EEE1C19D96162C44695DB9F6043D
+
+
+### Building
 
 Build the image.
 
     $ make image
+
+If the image looks good, tag it.
+
+    $ make tag
+
+Give it a spin.
+
+    $ docker run --rm -it adborden/gentoo bash
