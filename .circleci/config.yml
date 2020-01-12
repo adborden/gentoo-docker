@@ -13,16 +13,16 @@ jobs:
           --recv-keys
           534E4209AB49EEE1C19D96162C44695DB9F6043D
           E1D6ABB63BFCFB4BA02FDF1CEC590EEAC9189250
-      - restore_cache:
-          keys:
-            # Maybe the tarball version should be its own file and the
-            # checksum would be based on this instead.
-            - v1-downloads-{{ checksum "Makefile" }}
       - run: make image
-      - save_cache:
-          key: v1-downloads-{{ checksum "Makefile" }}
-          paths:
-            - downloads
+
+  push:
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: make tag
+      - run: docker push adborden/gentoo
 
 
 workflows:
@@ -30,3 +30,10 @@ workflows:
   commit:
     jobs:
       - build
+      - push:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
