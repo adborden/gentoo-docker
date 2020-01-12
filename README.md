@@ -23,7 +23,7 @@ building.
 
 Download the Gentoo release signing key.
 
-    $ gpg --recv-keys 534E4209AB49EEE1C19D96162C44695DB9F6043D
+    $ gpg --keyserver hkps://keys.gentoo.org --recv-keys 534E4209AB49EEE1C19D96162C44695DB9F6043D
 
 
 ### Building

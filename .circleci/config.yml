@@ -1,0 +1,30 @@
+---
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: >-
+          gpg
+          --keyserver hkps://keys.gentoo.org
+          --recv-keys 534E4209AB49EEE1C19D96162C44695DB9F6043D
+      - restore_cache:
+          keys:
+            # Maybe the tarball version should be its own file and the
+            # checksum would be based on this instead.
+            - v1-downloads-{{ checksum "Makefile" }}
+      - run: make image
+      - save_cache:
+          key: v1-downloads-{{ checksum "Makefile" }}
+          paths:
+            - downloads
+
+
+workflows:
+  version: 2
+  commit:
+    jobs:
+      - build
