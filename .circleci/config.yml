@@ -13,8 +13,7 @@ jobs:
           --recv-keys
           534E4209AB49EEE1C19D96162C44695DB9F6043D
           E1D6ABB63BFCFB4BA02FDF1CEC590EEAC9189250
-      - run: make image
-      - run: make test
+      - run: make image test
 
   push:
     docker:
