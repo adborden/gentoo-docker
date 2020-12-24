@@ -24,10 +24,10 @@ $(STAGE3_IDENTIFIER): $(DOWNLOADS_TOUCH)
 $(PORTAGE_SNAPSHOT_TARBALL) $(PORTAGE_SNAPSHOT_TARBALL_SIG): $(DOWNLOADS_TOUCH)
 	cd $(DOWNLOADS_DIR) && wget --timestamping http://distfiles.gentoo.org/snapshots/$(notdir $@)
 
-$(STAGE3_TARBALL) $(STAGE3_DIGESTS): $(STAGE3_VERSION_FILE) $(DOWNLOADS_TOUCH)
+$(STAGE3_TARBALL) $(STAGE3_DIGESTS): $(STAGE3_VERSION_FILE)
 	cd $(DOWNLOADS_DIR) && wget --timestamping http://distfiles.gentoo.org/releases/amd64/autobuilds/$(STAGE3_VERSION)/$(notdir $@)
 
-$(STAGE3_VERSION_FILE): $(STAGE3_IDENTIFIER) $(DOWNLOADS_TOUCH)
+$(STAGE3_VERSION_FILE): $(STAGE3_IDENTIFIER)
 	tail -n 1 $(STAGE3_IDENTIFIER) | sed -e 's!/.*$$!!' > $@
 
 # Parse out the SHA512 hash for tarball. DIGESTS contains digests for several
@@ -39,7 +39,7 @@ $(DOWNLOADS_DIR)/sha512sum.txt: $(STAGE3_DIGESTS)
 verify-portage-snapshot: $(PORTAGE_SNAPSHOT_TARBALL_SIG) $(PORTAGE_SNAPSHOT_TARBALL)
 	gpg --verify $^
 
-verify-stage3: $(STAGE3_TARBALL) $(DOWNLOADS_DIR)/sha512sum.txt
+verify-stage3: $(STAGE3_VERSION_FILE) $(STAGE3_TARBALL) $(DOWNLOADS_DIR)/sha512sum.txt
 	cd $(DOWNLOADS_DIR) && sha512sum -c sha512sum.txt
 
 verify: verify-stage3 verify-portage-snapshot
