@@ -2,11 +2,9 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: circleci/python
+    machine: true
     steps:
       - checkout
-      - setup_remote_docker
       - run: >-
           gpg
           --keyserver hkps://keys.gentoo.org
@@ -16,11 +14,9 @@ jobs:
       - run: make image test
 
   push:
-    docker:
-      - image: circleci/python
+    machine: true
     steps:
       - checkout
-      - setup_remote_docker
       - run: make tag
       - run: docker push adborden/gentoo
 
