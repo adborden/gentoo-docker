@@ -36,7 +36,7 @@ $(STAGE3_VERSION_FILE): $(STAGE3_IDENTIFIER)
 # algorithms and several files, we only need one.
 $(DOWNLOADS_DIR)/sha512sum.txt: $(STAGE3_DIGESTS)
 	gpg --verify $(STAGE3_DIGESTS)
-	sed -n -e '/# SHA512 HASH/ {n;p}' $(STAGE3_DIGESTS) | grep $(stage3_tarball_name)$$ > $@
+	sed -n -e '/# SHA512 HASH/ {n;p}' -e 's/stage3-amd64-.*\.tar.xz/$(STAGE3_TARBALL)/' $(STAGE3_DIGESTS) | grep $(stage3_tarball_name)$$ > $@
 
 verify-portage-snapshot: $(PORTAGE_SNAPSHOT_TARBALL_SIG) $(PORTAGE_SNAPSHOT_TARBALL)
 	gpg --verify $^
