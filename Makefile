@@ -13,6 +13,7 @@ STAGE3_DIGESTS := $(DOWNLOADS_DIR)/stage3-amd64.tar.xz.DIGESTS.asc
 STAGE3_TARBALL := $(DOWNLOADS_DIR)/stage3-amd64.tar.xz
 
 STAGE3_VERSION = $(shell cat $(STAGE3_VERSION_FILE))
+stage3_tarball_name = stage3-amd64-$(STAGE3_VERSION).tar.xz
 
 $(DOWNLOADS_TOUCH):
 	mkdir -p downloads
@@ -25,9 +26,8 @@ $(PORTAGE_SNAPSHOT_TARBALL) $(PORTAGE_SNAPSHOT_TARBALL_SIG): $(DOWNLOADS_TOUCH)
 	cd $(DOWNLOADS_DIR) && wget --timestamping http://distfiles.gentoo.org/snapshots/$(notdir $@)
 
 $(STAGE3_TARBALL) $(STAGE3_DIGESTS) & : $(STAGE3_VERSION_FILE)
-	stage3_tarball=stage3-amd64-$(STAGE3_VERSION).tar.xz; \
-	wget http://distfiles.gentoo.org/releases/amd64/autobuilds/$(STAGE3_VERSION)/$${stage3_tarball} -O $(STAGE3_TARBALL) ; \
-	wget http://distfiles.gentoo.org/releases/amd64/autobuilds/$(STAGE3_VERSION)/$${stage3_tarball}.DIGESTS.asc -O $(STAGE3_DIGESTS)
+	wget http://distfiles.gentoo.org/releases/amd64/autobuilds/$(STAGE3_VERSION)/$(stage3_tarball_name) -O $(STAGE3_TARBALL) ; \
+	wget http://distfiles.gentoo.org/releases/amd64/autobuilds/$(STAGE3_VERSION)/$(stage3_tarball_name).DIGESTS.asc -O $(STAGE3_DIGESTS)
 
 $(STAGE3_VERSION_FILE): $(STAGE3_IDENTIFIER)
 	tail -n 1 $(STAGE3_IDENTIFIER) | sed -e 's!/.*$$!!' > $@
@@ -36,7 +36,7 @@ $(STAGE3_VERSION_FILE): $(STAGE3_IDENTIFIER)
 # algorithms and several files, we only need one.
 $(DOWNLOADS_DIR)/sha512sum.txt: $(STAGE3_DIGESTS)
 	gpg --verify $(STAGE3_DIGESTS)
-	sed -n -e '/# SHA512 HASH/ {n;p}' $(STAGE3_DIGESTS) | grep $(notdir $(STAGE3_TARBALL))$$ > $@
+	sed -n -e '/# SHA512 HASH/ {n;p}' $(STAGE3_DIGESTS) | grep $(stage3_tarball_name)$$ > $@
 
 verify-portage-snapshot: $(PORTAGE_SNAPSHOT_TARBALL_SIG) $(PORTAGE_SNAPSHOT_TARBALL)
 	gpg --verify $^
