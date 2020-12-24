@@ -54,3 +54,6 @@ image: verify
 
 tag:
 	docker tag $(DOCKER_REPOSITORY):$(STAGE3_VERSION) $(DOCKER_REPOSITORY):latest
+
+test:
+	docker run --rm $(DOCKER_REPOSITORY) emerge --quiet app-editors/vim
