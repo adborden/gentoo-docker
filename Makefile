@@ -50,7 +50,7 @@ clean:
 verify: verify-stage3 verify-portage-snapshot
 
 image: verify
-	docker build --build-arg STAGE3_VERSION=$(STAGE3_VERSION) -t $(DOCKER_REPOSITORY):$(STAGE3_VERSION) .
+	docker build --build-arg STAGE3_VERSION=$(STAGE3_VERSION) -t $(DOCKER_REPOSITORY):$(STAGE3_VERSION) -t $(DOCKER_REPOSITORY):latest .
 
 tag:
 	docker tag $(DOCKER_REPOSITORY):$(STAGE3_VERSION) $(DOCKER_REPOSITORY):latest
