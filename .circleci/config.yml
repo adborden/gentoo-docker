@@ -5,6 +5,7 @@ jobs:
     machine: true
     steps:
       - checkout
+      - run: apt-get install gnupg-curl
       - run: >-
           gpg
           --keyserver hkps://keys.gentoo.org
