@@ -1,5 +1,5 @@
 .DEFAULT: image
-.PHONY: image verify verify-stage3 verify-portage-snapshot
+.PHONY: clean image verify verify-stage3 verify-portage-snapshot
 
 DOCKER_REPOSITORY := adborden/gentoo
 DOWNLOADS_DIR := downloads
@@ -41,6 +41,9 @@ verify-portage-snapshot: $(PORTAGE_SNAPSHOT_TARBALL_SIG) $(PORTAGE_SNAPSHOT_TARB
 
 verify-stage3: $(STAGE3_VERSION_FILE) $(STAGE3_TARBALL) $(DOWNLOADS_DIR)/sha512sum.txt
 	cd $(DOWNLOADS_DIR) && sha512sum -c sha512sum.txt
+
+clean:
+	rm -rf downloads
 
 verify: verify-stage3 verify-portage-snapshot
 
